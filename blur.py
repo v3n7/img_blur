@@ -21,7 +21,8 @@ def mult(matr, core):
     return result
 
 
-def bokeh(image, core, file_name):
+@njit
+def bokeh(image, core):
     conv_core = core / MAX_BRIGHTNESS
     shift_x = conv_core.shape[0] // 2
     shift_y = conv_core.shape[1] // 2
@@ -47,7 +48,7 @@ def bokeh(image, core, file_name):
     image2 = image2[img_slice_x, img_slice_y, slice_z]
     image2 = image2 * MAX_BRIGHTNESS
     image2.astype(numpy.uint8)
-    cv2.imwrite(file_name, image2)
+    return image2
 
 
 MAX_BRIGHTNESS = 255
@@ -74,7 +75,8 @@ def main():
     for arr_file in files:
         name = arr_file["result_name"]
         result_name = f"C:\\Python Scripts\\Blur\\{name}"
-        bokeh(arr_file["image"], arr_file["core"], result_name)
+        image = bokeh(arr_file["image"], arr_file["core"])
+        cv2.imwrite(result_name, image)
 
 
 if __name__ == "__main__":
